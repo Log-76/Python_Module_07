@@ -12,7 +12,8 @@ class Card(ABC):
         pass
 
     def get_card_info(self) -> dict:
-        return {"name": self.name, "cost": self.cost, "rarity": self.rarity}
+        return {"name": self.name, "cost": self.cost, "rarity": self.rarity,
+                "type": "Creature"}
 
     def is_playable(self, available_mana: int) -> bool:
         if available_mana < self.cost:
