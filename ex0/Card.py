@@ -6,6 +6,7 @@ class Card(ABC):
         self.name = name
         self.cost = cost
         self.rarity = rarity
+        self.type = "Creature"
 
     @abstractmethod
     def play(self, game_state: dict) -> dict:
@@ -13,7 +14,7 @@ class Card(ABC):
 
     def get_card_info(self) -> dict:
         return {"name": self.name, "cost": self.cost, "rarity": self.rarity,
-                "type": "Creature"}
+                "type": self.type}
 
     def is_playable(self, available_mana: int) -> bool:
         if available_mana < self.cost:

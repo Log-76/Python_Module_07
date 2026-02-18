@@ -8,7 +8,6 @@ class CreatureCard(Card):
         self.attack = attack
         self.health = health
 
-    # a faire
     def play(self, game_state: dict) -> dict:
         return {'card_played': self.name, 'mana_used': self.cost,
                 'effect': 'Creature summoned to battlefield'}
