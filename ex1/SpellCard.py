@@ -10,19 +10,44 @@ class SpellCard:
         if self.use is True:
             return {"error": "Spell already used"}
         if game_state["mana"] < self.cost:
-            return {"error": "not enougth mana for this spell"}
-        game_state["mana"] -= game_state["cost"]
-        target = [game_state["targets"]]
-        result = self.resolve_effect(target)
+            return {"error": "not enough mana"}
+        game_state["mana"] -= self.cost
+        result = self.resolve_effect([])
         self.use = True
-        return game_state.update(result)
+        return {"card_played": self.name, "mana_used": self.cost,
+                "effect": result["effect"]}
 
     def resolve_effect(self, targets: list) -> dict:
-
-        # TODO: Branch logic based on self.effect_type:
-        #   - "damage"  → TODO: Calculate and apply damage to each target
-        #   - "heal"    → TODO: Calculate and restore HP to each target
-        #   - "buff"    → TODO: Apply a positive stat modifier to each target
-        #   - "debuff"  → TODO: Apply a negative stat modifier to each target
-        # TODO: Build and return a result dict summarizing what happened (affected targets, amounts, etc.)
-        pass
+        results = []
+        if self.effect_type == "damage":
+            damage_amount = 3
+            for target in targets:
+                target["hp"] -= damage_amount
+                results.append({"target": target["name"],
+                                "damage": damage_amount,
+                                "hp_remaining": target["hp"]})
+            return {"effect": f"Deal {self.cost} damage to target"}
+        if self.effect_type == "heal":
+            heal = 3
+            for target in targets:
+                target["hp"] += heal
+                results.append({"target": target["name"],
+                                "heal": heal,
+                                "hp_remaining": target["hp"]})
+            return {"effect": "heal", "affected": results}
+        if self.effect_type == "buff":
+            buff = 1
+            for target in targets:
+                target["mana"] += buff
+                results.append({"target": target["name"],
+                                "buff": buff,
+                                "mana_remaining": target["mana"]})
+            return {"effect": "buff", "affected": results}
+        if self.effect_type == "debuff":
+            debuff = 1
+            for target in targets:
+                target["mana"] += debuff
+                results.append({"target": target["name"],
+                                "mana": debuff,
+                                "mana_remaining": target["mana"]})
+            return {"effect": "mana", "affected": results}
