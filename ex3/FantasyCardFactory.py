@@ -2,6 +2,7 @@ from ex0.CreatureCard import CreatureCard
 from ex1.SpellCard import SpellCard
 from ex1.ArtifactCard import ArtifactCard
 from .CardFactory import CardFactory
+import random
 
 
 class FantasyCardFactory(CardFactory):
@@ -26,18 +27,44 @@ class FantasyCardFactory(CardFactory):
 
     def create_creature(self, name_or_power: str | int
                         | None = None) -> CreatureCard:
-        key = name_or_power if name_or_power in self._registry else "dragon"
-        dq
+        creatures = self._registry['creatures']
+        key = name_or_power if name_or_power in creatures else "dragon"
+        data = creatures[key]
+        return CreatureCard(data["name"], data["cost"], data["rarity"],
+                            data["attack"], data["health"])
+
     def create_spell(self, name_or_power: str | int
                      | None = None) -> SpellCard:
-        pass
+        spells = self._registry['spells']
+        key = name_or_power if name_or_power in spells else "fireball"
+        data = spells[key]
+        return SpellCard(data["name"], data["cost"], data["rarity"],
+                         data["power"])
 
     def create_artifact(self, name_or_power: str | int
                         | None = None) -> ArtifactCard:
-        pass
+        artif = self._registry['artifacts']
+        key = name_or_power if name_or_power in artif else "mana_ring"
+        data = artif[key]
+        return SpellCard(data["name"], data["cost"], data["rarity"],
+                         data["effect"])
 
     def create_themed_deck(self, size: int) -> dict:
-        pass
+        """Crée un deck aléatoire de la taille spécifiée."""
+        deck = []
+        categories = list(self._registry.keys())
+        for _ in range(size):
+            cat = random.choice(categories)
+            card_key = random.choice(list(self._registry[cat].keys()))
+            if cat == 'creatures':
+                deck.append(self.create_creature(card_key))
+            elif cat == 'spells':
+                deck.append(self.create_spell(card_key))
+            else:
+                deck.append(self.create_artifact(card_key))
+        return {"deck": deck, "size": len(deck)}
 
     def get_supported_types(self) -> dict:
-        pass
+        """Retourne les types supportés comme demandé dans l'output exemple."""
+        return {cat: list(cards.keys()) for cat, cards
+                in self._registry.items()}
