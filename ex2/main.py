@@ -8,7 +8,7 @@ print("- Magical: ['cast_spell', 'channel_mana', 'get_magic_stats']")
 print()
 
 # Créer la carte
-arcane_warrior = EliteCard("Arcane Warrior", 5, "legendary", 5, 3, 8)
+arcane_warrior = EliteCard("Arcane Warrior", 5, "legendary", 5, 3, 8, 5)
 
 game_state = {"mana": 10}
 

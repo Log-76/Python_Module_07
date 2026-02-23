@@ -3,29 +3,25 @@ from .GameStrategy import GameStrategy
 
 class AggressiveStrategy (GameStrategy):
     def execute_turn(self, hand: list, battlefield: list) -> dict:
-        # 1. On joue des cartes de la main (ton code précédent)
-        cards_to_play = sorted(hand, key=lambda x: x.cost)[:2]
+        cheap_cards = sorted(hand, key=lambda card: card.cost)[:2]
 
-        # 2. On fait attaquer les créatures déjà sur le terrain (battlefield)
-        # On additionne la puissance (power) de chaque créature sur le plateau
-        damage_from_battlefield = sum(card.power for card in battlefield)
+        field_damage = sum(getattr(card, 'attack', 0) for card in battlefield)
+        spell_damage = sum(3 for card in cheap_cards
+                           if "Spell" in str(type(card)))
+        total_damage = field_damage + spell_damage
 
-        # 3. On calcule les dégâts des nouveaux sorts joués
-        # (ex: 3 dégâts par sort)
-        damage_from_spells = sum(3 for card in cards_to_play if "Spell"
-                                 in str(type(card)))
-
-        return {
-            "cards_played": [c.name for c in cards_to_play],
-            "mana_used": sum(c.cost for c in cards_to_play),
-            "targets_attacked": ["Enemy Player"],
-            "damage_dealt": damage_from_battlefield + damage_from_spells}
+        mana_spent = sum(card.cost for card in cheap_cards)
+        cards_played = [card.name for card in cheap_cards]
+        targets = self.prioritize_targets(["Enemy Player"])
+        return {"cards_played": cards_played,
+                "mana_used": mana_spent,
+                "targets_attacked": targets,
+                "damage_dealt": total_damage}
 
     def get_strategy_name(self) -> str:
         return "AggressiveStrategy"
 
     def prioritize_targets(self, available_targets: list) -> list:
-        player_target = [t for t in available_targets if t == "Enemy Player"]
-        other_target = [t for t in available_targets if t != "Enemy Player"]
-
-        return player_target + other_target
+        enemy_targets = [t for t in available_targets if t == "Enemy Player"]
+        other_targets = [t for t in available_targets if t != "Enemy Player"]
+        return enemy_targets + other_targets

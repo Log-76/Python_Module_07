@@ -1,19 +1,24 @@
 from .CreatureCard import CreatureCard
 
-print("=== DataDeck Card Foundation ===\n")
-print("Testing Abstract Base Class Design:\n")
-dragon = CreatureCard("Fire Dragon", 5, "Legendary", 7, 5)
-print("CreatureCard Info:")
-print({"name": dragon.name, "cost": dragon.cost, "rarity": dragon.rarity,
-       "attack": dragon.attack, "health": dragon.health})
-print("\nPlaying Fire Dragon with 6 mana available:")
-print("playable:", dragon.is_playable(6))
-if dragon.is_playable(6) is True:
-    print(dragon.play({}))
+try:
+    print("=== DataDeck Card Foundation ===")
+    print("Testing Abstract Base Class Design:")
 
-gobling = CreatureCard("goblin", 5, "Legendary", 7, 5)
-print("\nFire Dragon attacks Goblin Warrior:")
-print("attack result", dragon.attack_target(gobling))
-print("\nTesting insufficient mana (3 available):")
-print("playable:", dragon.is_playable(3))
-print("Abstract pattern successfully demonstrated!")
+    dragon = CreatureCard("Fire Dragon", 5, "Legendary", 7, 5)
+    goblin = CreatureCard("Goblin Warrior", 2, "Common", 2, 1)
+
+    print("\nCreatureCard Info:")
+    print(dragon.get_card_info())
+
+    print("\nPlaying Fire Dragon with 6 mana available:")
+    print(f"Playable: {dragon.is_playable(6)}")
+    print(f"Play result: {dragon.play({})}")
+
+    print("\nFire Dragon attacks Goblin Warrior:")
+    print(f"Attack result: {dragon.attack_target(goblin)}")
+
+    print("\nTesting insufficient mana (3 available):")
+    print(f"Playable: {dragon.is_playable(3)}")
+    print("Abstract pattern successfully demonstrated")
+except ValueError as e:
+    print(e)

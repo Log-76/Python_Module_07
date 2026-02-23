@@ -2,33 +2,30 @@ from .FantasyCardFactory import FantasyCardFactory
 from .AggressiveStrategy import AggressiveStrategy
 from .GameEngine import GameEngine
 
+print("=== DataDeck Game Engine ===")
+print("Configuring Fantasy Card Game...")
 
-print("=== DataDeck Game Engine ===\n")
-
-# 1. Initialisation
 engine = GameEngine()
 factory = FantasyCardFactory()
 strategy = AggressiveStrategy()
 
-# 2. Configuration (Affiche les messages de config)
 engine.configure_engine(factory, strategy)
 
-# 3. Affichage des types supportés
-supported = factory.get_supported_types()
-print(f"Available types: {supported}")
-
-# 4. Simulation du tour
-print("\nSimulating aggressive turn...")
-turn_execution = engine.simulate_turn()
-
-# Affichage du détail du tour
-print("Turn execution:")
+print(f"Factory: {factory.__class__.__name__}")
 print(f"Strategy: {strategy.get_strategy_name()}")
-print(f"Actions: {turn_execution}")
+print(f"Available types: {factory.get_supported_types()}")
 
-# 5. Rapport final
+print("\nSimulating aggressive turn...")
+turn = engine.simulate_turn()
+
+print(f"Hand: {turn['hand']}")
+print("\nTurn execution:")
+print(f"Strategy: {turn['strategy']}")
+print(f"Actions: {turn['actions']}")
+
 print("\nGame Report:")
-report = engine.get_engine_status()
-print(report)
+print(engine.get_engine_status())
 
 print("\nAbstract Factory + Strategy Pattern: Maximum flexibility achieved!")
+print("How do Abstract Factory and Strategy patterns work together? What")
+print("makes this combination powerful for game engine systems?")

@@ -5,13 +5,12 @@ from .Magical import Magical
 
 class EliteCard(Card, Combatable, Magical):
     def __init__(self, name: str, cost: int, rarity: str, attack_power: int,
-                 defense: int, mana: int):
-        self.name = name
-        self.cost = cost
-        self.rarity = rarity
+                 defense: int, mana: int, health=1):
+        super().__init__(name, cost, rarity)
         self.attack_power = attack_power
         self.defense = defense
         self.mana = mana
+        self.health = health
 
     def play(self, game_state: dict) -> dict:
         if game_state["mana"] < self.cost:
@@ -27,9 +26,10 @@ class EliteCard(Card, Combatable, Magical):
     def defend(self, incoming_damage: int) -> dict:
         damage_blocked = min(self.defense, incoming_damage)
         damage_taken = max(0, incoming_damage - self.defense)
+        self.health -= damage_taken
         return {"defender": self.name, "damage_taken": damage_taken,
                 "damage_blocked": damage_blocked,
-                "still_alive": damage_taken < self.mana}
+                "still_alive": self.health > 0}
 
     def get_combat_stats(self) -> dict:
         return {"attack": self.attack_power, "defense": self.defense}

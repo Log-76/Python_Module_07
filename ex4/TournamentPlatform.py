@@ -20,8 +20,8 @@ class TournamentPlatform:
     def create_match(self, card1_id: str, card2_id: str) -> dict:
         c1 = self.registry[card1_id]
         c2 = self.registry[card2_id]
-        # Logique de match basée sur la puissance héritée de Combatable
-        if c1.power >= c2.power:
+
+        if c1.attack_power >= c2.attack_power:
             c1.update_wins(1)
             c2.update_losses(1)
             winner_id, loser_id = card1_id, card2_id
@@ -31,9 +31,8 @@ class TournamentPlatform:
             c1.update_losses(1)
             winner_id, loser_id = card2_id, card1_id
             winner_card, loser_card = c2, c1
+
         self.matches_played += 1
-        # Retourne le dictionnaire complet avec
-        # les ratings mis à jour pour la trace
         return {
             'winner': winner_id,
             'loser': loser_id,
@@ -42,17 +41,13 @@ class TournamentPlatform:
         }
 
     def get_leaderboard(self) -> list:
-        # Trie par rating décroissant
-        cards_items = list(self.registry.items())
-        sorted_items = sorted(cards_items, key=lambda
-                              x: x[1].calculate_rating(), reverse=True)
-        # Formatage textuel pour le leaderboard de la trace
-        leaderboard = []
-        for i, (cid, card) in enumerate(sorted_items, 1):
-            info = card.get_rank_info()
-            leaderboard.append(f"{card.name} - Rating: {info['rating']}"
-                               f"({info['record']})")
-        return leaderboard
+        sorted_cards = sorted(self.registry.items(),
+                              key=lambda item: item[1].rating, reverse=True)
+        return [
+            f"{rank}. {card.name} - Rating: {card.rating}"
+            f"({card.wins}-{card.losses})"
+            for rank, (card_id, card) in enumerate(sorted_cards, start=1)
+        ]
 
     def generate_tournament_report(self) -> dict:
         # Calcul de la moyenne des ratings pour le rapport
