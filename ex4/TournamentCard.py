@@ -26,7 +26,7 @@ class TournamentCard(Card, Combatable, Rankable):
         return {"name": self.name, "cost": self.cost,
                 "rarity": self.rarity, "type": "Tournament"}
 
-    def attack(self, target) -> dict:
+    def attack(self, target: object) -> dict:
         target_name = target.name if hasattr(target, "name") else target
         return {"attacker": self.name, "target": target_name,
                 "damage": self.attack_power, "combat_type": "tournament"}
